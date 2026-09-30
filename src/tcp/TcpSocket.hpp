@@ -50,6 +50,14 @@ public:
         return ::send(_clientSocket, msg, strlen(msg), 0) >= 0;
     }
 
+    int send(const char* msg, size_t length) {
+        if (!isSocketValid()) return false;
+
+        return ::send(_clientSocket, msg, length, 0);
+    }
+
+
+
     std::string receive()
     {
         if (!isSocketValid()) return "";
@@ -61,6 +69,15 @@ public:
         if (len > 0) return std::string(buffer, len);
 
         return "";
+    }
+
+    ssize_t receive(char* buffer, size_t maxLen)
+    {
+        if (!isSocketValid()) return -1;
+
+        ssize_t bytesRead = recv(_clientSocket, buffer, maxLen, 0);
+
+        return bytesRead;
     }
 
 
