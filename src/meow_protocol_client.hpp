@@ -31,6 +31,25 @@ struct Message {
     }
 
 
+    static Message makeNum(int32_t num)
+    {
+        Message msg{MessageType::Number};
+
+        msg.payload.resize(sizeof(num));
+        std::memcpy(msg.payload.data(), &num, sizeof(num));
+
+        return msg;
+    }
+
+    static Message makeStr(const std::string& str)
+    {
+        Message msg{MessageType::String};
+
+        msg.payload.assign(str.begin(), str.end());
+
+        return msg;
+    }
+
 };
 
 
@@ -96,9 +115,10 @@ public:
 
 
         std::vector<uint8_t> buffer(totalSize);
+        std::memcpy(buffer.data(), &netPayloadSize, sizeof(netPayloadSize));
+
         buffer[sizeof(netPayloadSize)] = rawType;
 
-        std::memcpy(buffer.data(), &netPayloadSize, sizeof(netPayloadSize));
 
         if (payloadSize > 0)
         {
